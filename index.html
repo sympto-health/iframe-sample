@@ -66,11 +66,11 @@
 
     // send result message from iframe to sympto
     document.getElementById('send-sympto').addEventListener('click', () => {
-      console.log(`Posted message to ${window.parent.origin}`);
+      console.log('Posted message');
       window.parent.postMessage(JSON.stringify({
         type: 'sympto_result',
         result: 'asdfasdf',
-      }), window.parent.origin);
+      }), '*');
       // dynamic target origin for purpose of demo
     }, false);
   </script>
