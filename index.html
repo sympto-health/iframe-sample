@@ -69,7 +69,8 @@
       window.parent.postMessage(JSON.stringify({
         type: 'sympto_result',
         result: 'asdfasdf',
-      }));
+      }), '*');
+      // wildcard target origin for purpose of demo
     }, false);
   </script>
 </html>
