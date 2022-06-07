@@ -50,7 +50,7 @@
         <button id="send-sympto" class="btn btn-outline-primary mx-auto d-block py-3 px-5">
           Send Message to Sympto
         </button>
-        <button id="send-sympto" class="btn btn-outline-success mx-auto mt-3 d-block py-3 px-5">
+        <button id="send-sympto-json" class="btn btn-outline-success mx-auto mt-3 d-block py-3 px-5">
           Send JSON Message to Sympto
         </button>
       </div>
@@ -84,7 +84,7 @@
     }, false);
 
      // send result message from iframe to sympto
-    document.getElementById('send-sympto').addEventListener('click', () => {
+    document.getElementById('send-sympto-json').addEventListener('click', () => {
       console.log('Posted message');
       window.parent.postMessage(JSON.stringify({
         type: 'sympto_result',
