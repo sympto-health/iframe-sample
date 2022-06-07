@@ -18,11 +18,12 @@
     <style>
       .card-cont {
         width: 35em;
-        max-width: 100%;
+        max-width: 90%;
+        margin: auto;
       }
     </style>
   </head>
-  <body class="bg-light p-5">
+  <body class="bg-light py-5">
     <div class="card-cont mx-auto p-5 card bg-white">
       <div class="text-center lead font-weight-light pb-4">
         Sample Sympto iFrame
@@ -52,7 +53,19 @@
         </button>
         <button id="send-sympto-json" class="btn btn-outline-success mx-auto mt-3 d-block py-3 px-5">
           Send JSON Message to Sympto
+          <div style="font-size:0.8em;">
+            Keys: clinicName, clinicAddress
+          </div>
+          <div style="font-size:0.8em;">
+            Iteration: <span id="iteration">1</span>
+          </div>
         </button>
+        <div class="form-check text-center mt-3 font-weight-light text-secondary">
+          <input class="form-check-input" type="checkbox" value="" id="completionMessageCheck">
+          <label class="form-check-label" for="completionMessageCheck">
+            Send iFrame Complete Message
+          </label>
+        </div>
       </div>
     </div>
   </body>
@@ -77,22 +90,29 @@
     document.getElementById('send-sympto').addEventListener('click', () => {
       console.log('Posted message');
       window.parent.postMessage(JSON.stringify({
-        type: 'sympto_result',
+        type: document.getElementById('completionMessageCheck').checked
+          ? 'sympto_result'
+          : 'sympto_incomplete_result',
         result: 'https://navigate.searchful.care/stack/99c31de7-4038-4a20-837d-224f6f78f83a',
       }), '*');
       // dynamic target origin for purpose of demo
     }, false);
 
+    let iteration = 1;
      // send result message from iframe to sympto
     document.getElementById('send-sympto-json').addEventListener('click', () => {
       console.log('Posted message');
+      document.getElementById('iteration').innerHTML = iteration;
       window.parent.postMessage(JSON.stringify({
-        type: 'sympto_result',
+        type: document.getElementById('completionMessageCheck').checked
+          ? 'sympto_result'
+          : 'sympto_incomplete_result',
         result: {
-          clinicName: 'bob',
-          clinicAddress: 'foo',
+          clinicName: `ClinicName${iteration}`,
+          clinicAddress: `ClinicAddress${iteration}`,
         },
       }), '*');
+      iteration += 1;
       // dynamic target origin for purpose of demo
     }, false);
   </script>
