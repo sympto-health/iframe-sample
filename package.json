@@ -1,0 +1,22 @@
+{
+  "name": "iframe-sample",
+  "version": "1.0.0",
+  "description": "iFrame Sample",
+  "main": "index.js",
+  "scripts": {
+    "serve": "http-server . -g --cors -e html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sympto-health/iframe-sample.git"
+  },
+  "author": "Prithvi Narasimhan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sympto-health/iframe-sample/issues"
+  },
+  "homepage": "https://github.com/sympto-health/iframe-sample#readme",
+  "dependencies": {
+    "http-server": "^14.1.1"
+  }
+}
