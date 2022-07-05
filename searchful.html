@@ -1,0 +1,87 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Sample Searchful Preview</title>
+    <meta name="description" content="Sample Searchful Preview">
+    <meta name="author" content="Sympto Dev">
+
+    <meta property="og:title" content="Sample Searchful Preview">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.symptohealth.com/">
+    <meta property="og:description" content="A Sample Searchful Preview">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+      .card-cont {
+        width: 35em;
+        max-width: 90%;
+        margin: auto;
+      }
+    </style>
+  </head>
+  <body class="bg-light py-5">
+    <div class="card-cont mx-auto p-5 card bg-white">
+      <div class="text-center lead font-weight-light pb-3">
+        Sample Searchful D2C Landing Page
+      </div>
+      <div class="border-top pt-4 mt-3">
+        <div
+          id="error-message"
+          class="mb-3 font-weight-light text-danger"
+        >
+        </div>
+        <form id="phone-form">
+          <div class="form-group">
+            <input type="phoneNumber" class="bg-light py-4 form-control" id="phoneNumber" placeholder="Phone Number">
+          </div>
+          <button type="submit" class="btn btn-success font-weight-light mx-auto d-block ">
+            Send Stack
+          </button>
+        </form>
+      </div>
+    </div>
+  </body>
+  <script>
+    document.getElementById('phone-form').addEventListener('submit', event => {
+      event.preventDefault();
+      const phoneNumber = document.getElementById('phoneNumber');
+      if (phoneNumber.value.trim().length === 0) {
+        document.getElementById("error-message").innerHTML = "Plese enter valid phone number"
+      }    
+      const response = await fetch('https://api.pristine.symptodev.site/providers/patient/create', {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+          'Content-Type': 'application/json'
+          'Authorization': 'Bearer CREATE-ACCOUNT-eyJjbGllbnRTaWRlUGF0aWVudENyZWF0aW9uS2V5IjoiMzEyOTBhYTAtMWY0OS00MWFhLTkwZWEtOGJiODhhZTY3NGZjIiwicHJvdmlkZXJUdklkIjoiNDZmNGVmNGItYWVjMS00NWMwLWFkMWUtZmZjNmRjODg2NGU4In0='
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify({
+          firstName: 'Auto',
+          lastName: 'User',
+          email: null,
+          phoneNumber,
+          notificationType: ['text'],
+          notes: '',
+          mrn: null,
+          patientAttributes: [
+            {
+              patientAttributeId: 'd62dc9ef-f4b6-4052-b26f-ea022a105a96',
+              value: true,
+            },
+          ],
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          language: 'English',
+        }) 
+      });
+      console.log(response.json());
+    });
+  </script>
+</html>
