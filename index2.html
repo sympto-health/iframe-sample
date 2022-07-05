@@ -1,0 +1,119 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Sample iFrame Preview</title>
+    <meta name="description" content="Sample iFrame Preview">
+    <meta name="author" content="Sympto Dev">
+
+    <meta property="og:title" content="Sample iFrame Preview">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.symptohealth.com/">
+    <meta property="og:description" content="A Sample iFrame Preview">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+      .card-cont {
+        width: 35em;
+        max-width: 90%;
+        margin: auto;
+      }
+    </style>
+  </head>
+  <body class="bg-light py-5">
+    <div class="card-cont mx-auto p-5 card bg-white">
+      <div class="text-center lead font-weight-light pb-4">
+        Sample Sympto iFrame
+      </div>
+      <div id="query-param-cont">
+        <div
+          id="error-message"
+          style="display: none;"
+          class="text-center lead bg-light p-5 border shadow-sm font-weight-light text-danger"
+        >
+          No query parameters passed in
+        </div>
+        <div class="query-component p-3 border bg-light rounded mb-4">
+          <div class="mb-2">
+            <span class="text-secondary font-weight-light mr-1">Title: </span>
+            <span class="title-item"></span>
+          </div>
+          <div>
+            <span class="text-secondary font-weight-light mr-1">Value: </span>
+            <span class="value-item"></span>
+          </div>
+        </div>
+      </div>
+      <div class="border-top pt-4 mt-3">
+        <button id="send-sympto" class="btn btn-outline-primary mx-auto d-block py-3 px-5">
+          Send Message to Sympto
+        </button>
+        <button id="send-sympto-json" class="btn btn-outline-success mx-auto mt-3 d-block py-3 px-5">
+          Send JSON Message to Sympto
+          <div style="font-size:0.8em;">
+            Keys: clinicName, clinicAddress
+          </div>
+          <div style="font-size:0.8em;">
+            Iteration: <span id="iteration">1</span>
+          </div>
+        </button>
+        <div class="form-check text-center mt-3 font-weight-light text-secondary">
+          <input class="form-check-input" type="checkbox" value="" id="completionMessageCheck">
+          <label class="form-check-label" for="completionMessageCheck">
+            Send iFrame Complete Message
+          </label>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    const parameterContainer = document.getElementById('query-param-cont');
+    const parameterComponent = document.getElementsByClassName('query-component')[0];
+    parameterComponent.remove();
+
+    // parse url parameters
+    const urlParams = [...new URLSearchParams(window.location.search).entries()];
+    if (urlParams.length === 0) {
+      document.getElementById('error-message').style.display = 'block';
+    }
+    urlParams.forEach(([key, value]) => {
+      const currentParams = parameterComponent.cloneNode(true);
+      currentParams.getElementsByClassName("title-item")[0].innerHTML = key;
+      currentParams.getElementsByClassName("value-item")[0].innerHTML = value;
+      parameterContainer.appendChild(currentParams);
+    });
+
+    // send result message from iframe to sympto
+    document.getElementById('send-sympto').addEventListener('click', () => {
+      console.log('Posted message');
+      window.parent.postMessage(JSON.stringify({
+        type: document.getElementById('completionMessageCheck').checked
+          ? 'sympto_result'
+          : 'sympto_incomplete_result',
+        result: 'https://navigate.searchful.care/stack/99c31de7-4038-4a20-837d-224f6f78f83a',
+      }), '*');
+      // dynamic target origin for purpose of demo
+    }, false);
+
+    let iteration = 1;
+     // send result message from iframe to sympto
+    document.getElementById('send-sympto-json').addEventListener('click', () => {
+      console.log('Posted message');
+      document.getElementById('iteration').innerHTML = iteration;
+      window.parent.postMessage(JSON.stringify({
+        type: document.getElementById('completionMessageCheck').checked
+          ? 'sympto_result'
+          : 'sympto_incomplete_result',
+        result: {
+          clinicName: `ClinicName${iteration}`,
+          clinicAddress: `ClinicAddress${iteration}`,
+        },
+      }), '*');
+      iteration += 1;
+      // dynamic target origin for purpose of demo
+    }, false);
+  </script>
+</html>

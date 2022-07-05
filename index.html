@@ -5,14 +5,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Sample iFrame Preview</title>
-    <meta name="description" content="Sample iFrame Preview">
+    <title>Sample Searchful Preview</title>
+    <meta name="description" content="Sample Searchful Preview">
     <meta name="author" content="Sympto Dev">
 
-    <meta property="og:title" content="Sample iFrame Preview">
+    <meta property="og:title" content="Sample Searchful Preview">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.symptohealth.com/">
-    <meta property="og:description" content="A Sample iFrame Preview">
+    <meta property="og:description" content="A Sample Searchful Preview">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <style>
@@ -25,95 +25,63 @@
   </head>
   <body class="bg-light py-5">
     <div class="card-cont mx-auto p-5 card bg-white">
-      <div class="text-center lead font-weight-light pb-4">
-        Sample Sympto iFrame
-      </div>
-      <div id="query-param-cont">
-        <div
-          id="error-message"
-          style="display: none;"
-          class="text-center lead bg-light p-5 border shadow-sm font-weight-light text-danger"
-        >
-          No query parameters passed in
-        </div>
-        <div class="query-component p-3 border bg-light rounded mb-4">
-          <div class="mb-2">
-            <span class="text-secondary font-weight-light mr-1">Title: </span>
-            <span class="title-item"></span>
-          </div>
-          <div>
-            <span class="text-secondary font-weight-light mr-1">Value: </span>
-            <span class="value-item"></span>
-          </div>
-        </div>
+      <div class="text-center lead font-weight-light pb-3">
+        Sample Searchful D2C Landing Page
       </div>
       <div class="border-top pt-4 mt-3">
-        <button id="send-sympto" class="btn btn-outline-primary mx-auto d-block py-3 px-5">
-          Send Message to Sympto
-        </button>
-        <button id="send-sympto-json" class="btn btn-outline-success mx-auto mt-3 d-block py-3 px-5">
-          Send JSON Message to Sympto
-          <div style="font-size:0.8em;">
-            Keys: clinicName, clinicAddress
-          </div>
-          <div style="font-size:0.8em;">
-            Iteration: <span id="iteration">1</span>
-          </div>
-        </button>
-        <div class="form-check text-center mt-3 font-weight-light text-secondary">
-          <input class="form-check-input" type="checkbox" value="" id="completionMessageCheck">
-          <label class="form-check-label" for="completionMessageCheck">
-            Send iFrame Complete Message
-          </label>
+        <div
+          id="error-message"
+          class="mb-3 font-weight-light text-danger"
+        >
         </div>
+        <form id="phone-form">
+          <div class="form-group">
+            <input type="phoneNumber" class="bg-light py-4 form-control" id="phoneNumber" placeholder="Phone Number">
+          </div>
+          <button type="submit" class="btn btn-success font-weight-light mx-auto d-block ">
+            Send Stack
+          </button>
+        </form>
       </div>
     </div>
   </body>
   <script>
-    const parameterContainer = document.getElementById('query-param-cont');
-    const parameterComponent = document.getElementsByClassName('query-component')[0];
-    parameterComponent.remove();
-
-    // parse url parameters
-    const urlParams = [...new URLSearchParams(window.location.search).entries()];
-    if (urlParams.length === 0) {
-      document.getElementById('error-message').style.display = 'block';
-    }
-    urlParams.forEach(([key, value]) => {
-      const currentParams = parameterComponent.cloneNode(true);
-      currentParams.getElementsByClassName("title-item")[0].innerHTML = key;
-      currentParams.getElementsByClassName("value-item")[0].innerHTML = value;
-      parameterContainer.appendChild(currentParams);
-    });
-
-    // send result message from iframe to sympto
-    document.getElementById('send-sympto').addEventListener('click', () => {
-      console.log('Posted message');
-      window.parent.postMessage(JSON.stringify({
-        type: document.getElementById('completionMessageCheck').checked
-          ? 'sympto_result'
-          : 'sympto_incomplete_result',
-        result: 'https://navigate.searchful.care/stack/99c31de7-4038-4a20-837d-224f6f78f83a',
-      }), '*');
-      // dynamic target origin for purpose of demo
-    }, false);
-
-    let iteration = 1;
-     // send result message from iframe to sympto
-    document.getElementById('send-sympto-json').addEventListener('click', () => {
-      console.log('Posted message');
-      document.getElementById('iteration').innerHTML = iteration;
-      window.parent.postMessage(JSON.stringify({
-        type: document.getElementById('completionMessageCheck').checked
-          ? 'sympto_result'
-          : 'sympto_incomplete_result',
-        result: {
-          clinicName: `ClinicName${iteration}`,
-          clinicAddress: `ClinicAddress${iteration}`,
+    document.getElementById('phone-form').addEventListener('submit', event => {
+      event.preventDefault();
+      const phoneNumber = document.getElementById('phoneNumber');
+      if (phoneNumber.value.trim().length === 0) {
+        document.getElementById("error-message").innerHTML = "Plese enter valid phone number"
+      }    
+      const response = await fetch('https://api.pristine.symptodev.site/providers/patient/create', {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+          'Content-Type': 'application/json'
+          'Authorization': 'Bearer CREATE-ACCOUNT-eyJjbGllbnRTaWRlUGF0aWVudENyZWF0aW9uS2V5IjoiMzEyOTBhYTAtMWY0OS00MWFhLTkwZWEtOGJiODhhZTY3NGZjIiwicHJvdmlkZXJUdklkIjoiNDZmNGVmNGItYWVjMS00NWMwLWFkMWUtZmZjNmRjODg2NGU4In0='
         },
-      }), '*');
-      iteration += 1;
-      // dynamic target origin for purpose of demo
-    }, false);
+        redirect: 'follow', // manual, *follow, error
+        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify({
+          firstName: 'Auto',
+          lastName: 'User',
+          email: null,
+          phoneNumber,
+          notificationType: ['text'],
+          notes: '',
+          mrn: null,
+          patientAttributes: [
+            {
+              patientAttributeId: 'd62dc9ef-f4b6-4052-b26f-ea022a105a96',
+              value: true,
+            },
+          ],
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          language: 'English',
+        }) 
+      });
+      console.log(response.json());
+    });
   </script>
 </html>
