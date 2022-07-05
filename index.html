@@ -34,6 +34,11 @@
           class="mb-3 font-weight-light text-danger"
         >
         </div>
+        <div
+          id="success-message"
+          class="mb-3 font-weight-light text-primary"
+        >
+        </div>
         <form id="phone-form">
           <div class="form-group">
             <input type="phoneNumber" class="bg-light py-4 form-control" id="phoneNumber" placeholder="Phone Number">
@@ -46,42 +51,55 @@
     </div>
   </body>
   <script>
-    document.getElementById('phone-form').addEventListener('submit', event => {
+    document.getElementById('phone-form').addEventListener('submit', async (event) => {
+      document.getElementById("success-message").innerHTML = '';
+      document.getElementById("error-message").innerHTML = '';
       event.preventDefault();
       const phoneNumber = document.getElementById('phoneNumber');
-      if (phoneNumber.value.trim().length === 0) {
+      const formattedNumber = phoneNumber.value.trim();
+      if (formattedNumber.length === 0) {
         document.getElementById("error-message").innerHTML = "Plese enter valid phone number"
+        return;
       }    
-      const response = await fetch('https://api.pristine.symptodev.site/providers/patient/create', {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors', // no-cors, *cors, same-origin
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: 'same-origin', // include, *same-origin, omit
-        headers: {
-          'Content-Type': 'application/json'
-          'Authorization': 'Bearer CREATE-ACCOUNT-eyJjbGllbnRTaWRlUGF0aWVudENyZWF0aW9uS2V5IjoiMzEyOTBhYTAtMWY0OS00MWFhLTkwZWEtOGJiODhhZTY3NGZjIiwicHJvdmlkZXJUdklkIjoiNDZmNGVmNGItYWVjMS00NWMwLWFkMWUtZmZjNmRjODg2NGU4In0='
-        },
-        redirect: 'follow', // manual, *follow, error
-        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify({
-          firstName: 'Auto',
-          lastName: 'User',
-          email: null,
-          phoneNumber,
-          notificationType: ['text'],
-          notes: '',
-          mrn: null,
-          patientAttributes: [
-            {
-              patientAttributeId: 'd62dc9ef-f4b6-4052-b26f-ea022a105a96',
-              value: true,
-            },
-          ],
-          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          language: 'English',
-        }) 
-      });
-      console.log(response.json());
+      try {
+        const response = await fetch('https://api.pristine.symptodev.site/providers/patient/create', {
+          method: 'POST', // *GET, POST, PUT, DELETE, etc.
+          mode: 'cors', // no-cors, *cors, same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin', // include, *same-origin, omit
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer CREATE-ACCOUNT-eyJjbGllbnRTaWRlUGF0aWVudENyZWF0aW9uS2V5IjoiMzEyOTBhYTAtMWY0OS00MWFhLTkwZWEtOGJiODhhZTY3NGZjIiwicHJvdmlkZXJUdklkIjoiNDZmNGVmNGItYWVjMS00NWMwLWFkMWUtZmZjNmRjODg2NGU4In0=',
+          },
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify({
+            firstName: 'Auto',
+            lastName: 'User',
+            email: null,
+            phoneNumber: formattedNumber,
+            notificationType: ['text'],
+            notes: '',
+            mrn: null,
+            patientAttributes: [
+              {
+                patientAttributeId: 'd62dc9ef-f4b6-4052-b26f-ea022a105a96',
+                value: true,
+              },
+            ],
+            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            language: 'English',
+          }) 
+        });
+        const jsonBody = await response.json();
+        if (jsonBody.Status === 'Error') {
+          throw new Error(jsonBody.Response);
+        }
+        document.getElementById("success-message").innerHTML = 'Success';
+        document.getElementById('phoneNumber').value = '';
+      } catch (e) {
+        document.getElementById("error-message").innerHTML = e.message;
+      }
     });
   </script>
 </html>
